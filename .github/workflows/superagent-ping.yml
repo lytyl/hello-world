@@ -1,0 +1,28 @@
+name: superagent-ping
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Issue number to comment on
+        required: true
+        default: "2"
+      text:
+        description: Comment body
+        required: true
+        default: "@lytyl 只看不改：请在这条评论下回复一句你收到的请求，不要修改任何文件，也不要开分支"
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment as github-actions bot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE: ${{ inputs.issue }}
+          TEXT: ${{ inputs.text }}
+        run: gh issue comment "$ISSUE" --repo "${{ github.repository }}" --body "$TEXT"
